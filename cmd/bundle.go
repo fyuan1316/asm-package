@@ -29,7 +29,7 @@ var bundleCmd = &cobra.Command{
 		asmVersion := viper.GetString("asmBundleVersion")
 		// v3.7-3-ga0a14d5
 		flaggerVersion := viper.GetString("flaggerBundleVersion")
-
+		output := viper.GetString("output")
 		//pkg.DownloadBundle(asmVersion, flaggerVersion)
 
 		typ := "bundle"
@@ -41,7 +41,7 @@ var bundleCmd = &cobra.Command{
 			//"HelmBin":              "helm3",
 			"AsmBundleVersion":     asmVersion,     //"v3.7-13-ge53b7de",
 			"FlaggerBundleVersion": flaggerVersion, //"v3.7-3-ga0a14d5",
-			"Destination":          ".",
+			"Destination":          output,
 		}
 		err := pkg.Download(typ, params)
 		if err != nil {

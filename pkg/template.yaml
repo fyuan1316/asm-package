@@ -3,7 +3,7 @@ bundle: |-
   docker login {{.Registry}} -u {{.User}} -p {{.Password}}
   {{.DockerBin}} pull {{.Registry}}/asm/asm-operator-bundle:{{.AsmBundleVersion}}
   {{.DockerBin}} pull {{.Registry}}/asm/flagger-operator-bundle:{{.FlaggerBundleVersion}}
-  {{.DockerBin}} save {{.Registry}}/asm/asm-operator-bundle:{{.AsmBundleVersion}} {{.Registry}}/asm/flagger-operator-bundle:{{.FlaggerBundleVersion}} -o {{.Destination}}/bundle.tar
+  {{.DockerBin}} save -o {{.Destination}}/bundle.tar {{.Registry}}/asm/asm-operator-bundle:{{.AsmBundleVersion}} {{.Registry}}/asm/flagger-operator-bundle:{{.FlaggerBundleVersion}}
 
 chart: |-
   set -o errexit
