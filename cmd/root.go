@@ -1,13 +1,15 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/spf13/cobra"
-	"k8s.io/client-go/util/homedir"
-
 	"github.com/spf13/viper"
+)
+
+var (
+	registry string
+	username string
+	passwd   string
+	output   string
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -15,10 +17,7 @@ var rootCmd = &cobra.Command{
 	Use:   "asm-package",
 	Short: "asm打包工具",
 	Long: `asm-package 是服务网格独立部署的命令行打包工具.
-第一步:
-使用 --list 命令查看计划升级的服务网格以及所在集群信息.
-第二步:
-使用 --upgrade 命令执行升级.`,
+`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -35,9 +34,12 @@ func Execute() {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
-	kubeCfgDefault := fmt.Sprintf("%s/.kube/config", homedir.HomeDir())
-	rootCmd.PersistentFlags().String("kubeconfig", kubeCfgDefault, "kube config path")
+	//cobra.OnInitialize(initConfig)
+	//kubeCfgDefault := fmt.Sprintf("%s/.kube/config", homedir.HomeDir())
+	rootCmd.PersistentFlags().StringVar(&registry, "registry", "build-harbor.alauda.cn", "registry")
+	rootCmd.PersistentFlags().StringVar(&username, "username", "Jian_Liao", "username of registry")
+	rootCmd.PersistentFlags().StringVar(&passwd, "passwd", "Asm@1234", "password of registry")
+	rootCmd.PersistentFlags().StringVar(&output, "output", "/tmp", "output directory")
 }
 
 // initConfig reads in config file and ENV variables if set.

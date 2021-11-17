@@ -2,17 +2,18 @@ package cmd
 
 import (
 	"flag"
+	"log"
+
+	"github.com/fyuan1316/asm-package/pkg"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	//"gitlab-ce.alauda.cn/micro-service/asm-global-controller/cmd/upgrade/upgrade_from_3.4.x/k8s"
-	//"gitlab-ce.alauda.cn/micro-service/asm-global-controller/cmd/upgrade/upgrade_from_3.4.x/k8s/model"
 )
 
 // bundleCmd represents the list command
 var bundleCmd = &cobra.Command{
 	Use:   "bundle",
 	Short: "打包operator镜像",
-	Long:  `asm operator包含:
+	Long: `asm operator包含:
 			- asm-operator
             - flagger-operator
 `,
@@ -24,19 +25,29 @@ var bundleCmd = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 
-		//client, err := k8s.NewClient(k8s.ClientArgs{
-		//	KubeConfig: viper.GetString("kubeconfig"),
-		//})
-		//if err != nil {
-		//	_, _ = fmt.Fprint(os.Stderr, err.Error())
-		//	return
-		//}
-		//list, err := client.ListMesh()
-		//if err != nil {
-		//	_, _ = fmt.Fprint(os.Stderr, err.Error())
-		//	return
-		//}
-		//printData(list)
+		// v3.7-13-ge53b7de
+		asmVersion := viper.GetString("asmBundleVersion")
+		// v3.7-3-ga0a14d5
+		flaggerVersion := viper.GetString("flaggerBundleVersion")
+
+		//pkg.DownloadBundle(asmVersion, flaggerVersion)
+
+		typ := "bundle"
+		params := map[string]string{
+			"Registry":  "build-harbor.alauda.cn",
+			"User":      "Jian_Liao",
+			"Password":  "Asm@1234",
+			"DockerBin": "docker",
+			//"HelmBin":              "helm3",
+			"AsmBundleVersion":     asmVersion,     //"v3.7-13-ge53b7de",
+			"FlaggerBundleVersion": flaggerVersion, //"v3.7-3-ga0a14d5",
+			"Destination":          ".",
+		}
+		err := pkg.Download(typ, params)
+		if err != nil {
+			log.Fatal(err)
+		}
+
 	},
 }
 
@@ -56,7 +67,15 @@ var bundleCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(bundleCmd)
-	bundleCmd.Flags().String("asmBundleVersion", "", "asm-operator-bundle的version")
-	bundleCmd.Flags().String("flaggerBundleVersion", "", "flagger-operator-bundle的version")
-
+	bundleCmd.Flags().String("asmBundleVersion", "", "asm-operator-bundle version")
+	bundleCmd.Flags().String("flaggerBundleVersion", "", "flagger-operator-bundle version")
+	var err error
+	err = bundleCmd.MarkFlagRequired("asmBundleVersion")
+	if err != nil {
+		panic(err)
+	}
+	err = bundleCmd.MarkFlagRequired("flaggerBundleVersion")
+	if err != nil {
+		panic(err)
+	}
 }

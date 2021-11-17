@@ -2,10 +2,11 @@ package cmd
 
 import (
 	"flag"
+	"log"
+
+	"github.com/fyuan1316/asm-package/pkg"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	//"gitlab-ce.alauda.cn/micro-service/asm-global-controller/cmd/upgrade/upgrade_from_3.4.x/k8s"
-	//"gitlab-ce.alauda.cn/micro-service/asm-global-controller/cmd/upgrade/upgrade_from_3.4.x/k8s/model"
 )
 
 // bundleCmd represents the list command
@@ -21,19 +22,22 @@ var chartCmd = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 
-		//client, err := k8s.NewClient(k8s.ClientArgs{
-		//	KubeConfig: viper.GetString("kubeconfig"),
-		//})
-		//if err != nil {
-		//	_, _ = fmt.Fprint(os.Stderr, err.Error())
-		//	return
-		//}
-		//list, err := client.ListMesh()
-		//if err != nil {
-		//	_, _ = fmt.Fprint(os.Stderr, err.Error())
-		//	return
-		//}
-		//printData(list)
+		// v3.7.0-alpha.681
+		chartVersion := viper.GetString("chartVersion")
+		output := viper.GetString("output")
+		params := map[string]string{
+			"Registry": "build-harbor.alauda.cn",
+			"User":     "Jian_Liao",
+			"Password": "Asm@1234",
+			// "DockerBin": "docker",
+			"HelmBin":      "helm3",
+			"ChartVersion": chartVersion, // "v3.7-13-ge53b7de",
+			"Destination":  output,
+		}
+		err := pkg.Download("chart", params)
+		if err != nil {
+			log.Fatal(err)
+		}
 	},
 }
 
@@ -53,6 +57,9 @@ var chartCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(chartCmd)
-	chartCmd.Flags().String("chartVersion", "", "chart-global-asm的version")
-
+	chartCmd.Flags().String("chartVersion", "", "chart-global-asm version")
+	err := chartCmd.MarkFlagRequired("chartVersion")
+	if err != nil {
+		panic(err)
+	}
 }

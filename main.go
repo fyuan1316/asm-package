@@ -1,6 +1,6 @@
 package main
 
-import "asm-chart-package/cmd"
+import "github.com/fyuan1316/asm-package/cmd"
 
 func main() {
 	cmd.Execute()
