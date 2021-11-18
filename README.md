@@ -59,5 +59,6 @@ drwxr-xr-x  6 yuan          wheel   192B 11 18 10:42 global-asm
 2. registry 需要口令登陆，请联系ASM Group管理人员获取.
     ```bash
     docker login <registry> -u <user> -p <passwd>
+    helm registry login <registry> -u <user> -p <passwd>
     ```
 3. images 打包是对chart中镜像的拉取和打包，所以执行前需要先完成chart下载。
