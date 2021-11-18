@@ -20,19 +20,9 @@ var imagesCmd = &cobra.Command{
 		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-
 		// v3.7.0-alpha.681
 		chartFolder := viper.GetString("chartFolder")
 		output := viper.GetString("output")
-		//params := map[string]string{
-		//	"Registry": "build-harbor.alauda.cn",
-		//	"User":     "Jian_Liao",
-		//	"Password": "Asm@1234",
-		//	// "DockerBin": "docker",
-		//	"HelmBin":      "helm3",
-		//	"ChartVersion": chartVersion, // "v3.7-13-ge53b7de",
-		//	"Destination":  output,
-		//}
 		pkg.DownloadImages(chartFolder,output)
 
 	},

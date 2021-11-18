@@ -1,21 +1,11 @@
 bundle: |-
   set -o errexit
-  docker login {{.Registry}} -u {{.User}} -p {{.Password}}
   {{.DockerBin}} pull {{.Registry}}/asm/asm-operator-bundle:{{.AsmBundleVersion}}
   {{.DockerBin}} pull {{.Registry}}/asm/flagger-operator-bundle:{{.FlaggerBundleVersion}}
-  {{.DockerBin}} save -o {{.Destination}}/bundle.tar {{.Registry}}/asm/asm-operator-bundle:{{.AsmBundleVersion}} {{.Registry}}/asm/flagger-operator-bundle:{{.FlaggerBundleVersion}}
+  {{.DockerBin}} save -o {{.Destination}}/{{.BundleName}} {{.Registry}}/asm/asm-operator-bundle:{{.AsmBundleVersion}} {{.Registry}}/asm/flagger-operator-bundle:{{.FlaggerBundleVersion}}
 
 chart: |-
   set -o errexit
   export HELM_EXPERIMENTAL_OCI=1
   {{.HelmBin}} chart pull {{.Registry}}/asm/chart-global-asm:{{.ChartVersion}}
   {{.HelmBin}} chart export {{.Registry}}/asm/chart-global-asm:{{.ChartVersion}} -d {{.Destination}}
-
-#images: |-
-#  set -o errexit
-#  docker login {{.Registry}} -u {{.User}} -p {{.Password}}
-#  {{.HelmBin}} chart pull {{.Registry}}/asm/asm-operator-bundle:{{.AsmBundleVersion}}
-#  {{.HelmBin}} chart pull {{.Registry}}/asm/flagger-operator-bundle:{{.FlaggerBundleVersion}}
-#
-#  {{.HelmBin}} chart export {{.Registry}}/asm/asm-operator-bundle:{{.AsmBundleVersion}} -d {{.Destination}}
-#  {{.HelmBin}} chart export {{.Registry}}/asm/flagger-operator-bundle:{{.FlaggerBundleVersion}} -d {{.Destination}}

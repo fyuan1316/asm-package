@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"flag"
+	"fmt"
 	"log"
 
 	"github.com/fyuan1316/asm-package/pkg"
@@ -24,46 +25,28 @@ var bundleCmd = &cobra.Command{
 		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-
-		// v3.7-13-ge53b7de
+		// bin/asm-package bundle --asmBundleVersion=v3.7-13-ge53b7de --flaggerBundleVersion=v3.7-3-ga0a14d5
 		asmVersion := viper.GetString("asmBundleVersion")
-		// v3.7-3-ga0a14d5
 		flaggerVersion := viper.GetString("flaggerBundleVersion")
 		output := viper.GetString("output")
-		//pkg.DownloadBundle(asmVersion, flaggerVersion)
+		dockerCmd := viper.GetString("dockerCmd")
 
 		typ := "bundle"
 		params := map[string]string{
-			"Registry":  "build-harbor.alauda.cn",
-			"User":      "Jian_Liao",
-			"Password":  "Asm@1234",
-			"DockerBin": "docker",
-			//"HelmBin":              "helm3",
-			"AsmBundleVersion":     asmVersion,     //"v3.7-13-ge53b7de",
-			"FlaggerBundleVersion": flaggerVersion, //"v3.7-3-ga0a14d5",
+			"Registry":             "build-harbor.alauda.cn",
+			"DockerBin":            dockerCmd,
+			"AsmBundleVersion":     asmVersion,     // "v3.7-13-ge53b7de",
+			"FlaggerBundleVersion": flaggerVersion, // "v3.7-3-ga0a14d5",
 			"Destination":          output,
+			"BundleName":           "asm-bundle.tar",
 		}
 		err := pkg.Download(typ, params)
 		if err != nil {
 			log.Fatal(err)
 		}
-
+		fmt.Printf("Exported %s to %s\n", params["BundleName"], params["Destination"])
 	},
 }
-
-//func printData(data []model.MeshInfo) {
-//	if len(data) == 0 {
-//		return
-//	}
-//	var columns [][]string
-//	columns = append(columns, []string{"ServiceMesh", "Cluster"})
-//	for _, d := range data {
-//		columns = append(columns, []string{d.Name, d.Cluster})
-//	}
-//	if err := pterm.DefaultTable.WithHasHeader().WithData(columns).Render(); err != nil {
-//		panic(err)
-//	}
-//}
 
 func init() {
 	rootCmd.AddCommand(bundleCmd)

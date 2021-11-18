@@ -4,6 +4,7 @@ import (
 	"bytes"
 	_ "embed"
 	"fmt"
+	"github.com/spf13/viper"
 	"io/ioutil"
 	"log"
 	"os/exec"
@@ -32,7 +33,6 @@ func render(typ string, params map[string]string) ([]byte, error) {
 		return nil, err
 	}
 	tmpl, err := template.New("").Parse(m[typ])
-	_ = tmpl
 	if err != nil {
 		return nil, err
 	}
@@ -92,10 +92,10 @@ func genImgList(values *ValuesContent, registry string) []string {
 }
 
 func DownloadImages(valuesPath, saveTo string) {
-	values := loadValues(valuesPath+"/values.yaml")
+	values := loadValues(valuesPath + "/values.yaml")
 	imageList := genImgList(values, registry)
 	dockerPull(imageList)
-	dockerSave(imageList, saveTo)
+	dockerSave(imageList, saveTo+"/asm-images.tar")
 }
 
 func loadValues(path string) *ValuesContent {
@@ -127,10 +127,11 @@ func dockerPull(imgList []string) {
 	fmt.Println("all images pulled.")
 }
 func doPull(img string) error {
+	dockerCmd := viper.GetString("dockerCmd")
 	var args []string
 	args = append(args, "pull")
 	args = append(args, img)
-	cmd := exec.Command("docker", args...)
+	cmd := exec.Command(dockerCmd, args...)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Println(string(out))
@@ -140,16 +141,17 @@ func doPull(img string) error {
 }
 
 func dockerSave(imgList []string, saveTo string) {
+	dockerCmd := viper.GetString("dockerCmd")
 	// docker save -o images.tar postgres:9.6 mongo:3.4
 	var args []string
 	args = append(args, "save")
 	args = append(args, "-o")
 	args = append(args, saveTo)
 	args = append(args, imgList...)
-	cmd := exec.Command("docker", args...)
+	cmd := exec.Command(dockerCmd, args...)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		fmt.Println(out)
+		fmt.Println(string(out))
 		log.Fatalln(err)
 	}
 	fmt.Printf("all images saved to %s\n.", saveTo)

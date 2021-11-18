@@ -7,9 +7,11 @@ import (
 
 var (
 	registry string
-	username string
-	passwd   string
+	//username string
+	//passwd   string
 	output   string
+	helmCmd string
+	dockerCmd string
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -37,9 +39,12 @@ func init() {
 	//cobra.OnInitialize(initConfig)
 	//kubeCfgDefault := fmt.Sprintf("%s/.kube/config", homedir.HomeDir())
 	rootCmd.PersistentFlags().StringVar(&registry, "registry", "build-harbor.alauda.cn", "registry")
-	rootCmd.PersistentFlags().StringVar(&username, "username", "Jian_Liao", "username of registry")
-	rootCmd.PersistentFlags().StringVar(&passwd, "passwd", "Asm@1234", "password of registry")
+	//rootCmd.PersistentFlags().StringVar(&username, "username", "Jian_Liao", "username of registry")
+	//rootCmd.PersistentFlags().StringVar(&passwd, "passwd", "Asm@1234", "password of registry")
 	rootCmd.PersistentFlags().StringVar(&output, "output", "/tmp", "output directory")
+
+	rootCmd.PersistentFlags().StringVar(&helmCmd, "helmCmd", "helm", "helm v3 binary")
+	rootCmd.PersistentFlags().StringVar(&dockerCmd, "dockerCmd", "docker", "docker binary")
 }
 
 // initConfig reads in config file and ENV variables if set.

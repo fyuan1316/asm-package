@@ -21,16 +21,17 @@ var chartCmd = &cobra.Command{
 		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-
+		// bin/asm-package chart --chartVersion=v3.7.0-alpha.681
 		// v3.7.0-alpha.681
 		chartVersion := viper.GetString("chartVersion")
+		helmCmd := viper.GetString("helmCmd")
 		output := viper.GetString("output")
 		params := map[string]string{
 			"Registry": "build-harbor.alauda.cn",
 			"User":     "Jian_Liao",
 			"Password": "Asm@1234",
 			// "DockerBin": "docker",
-			"HelmBin":      "helm3",
+			"HelmBin":      helmCmd,
 			"ChartVersion": chartVersion, // "v3.7-13-ge53b7de",
 			"Destination":  output,
 		}
